@@ -1,5 +1,5 @@
 from .app import app,db
-from .models import Questionnaire,Question, create_questionnaire, get_questionnaire, get_questionnaires
+from .models import Questionnaire, Question, create_questionnaire, delete_questionnaire, get_questionnaire, get_questionnaires, update_questionnaire, create_question, delete_question, get_questions, get_question, update_question
 from flask import jsonify, abort, make_response, request, redirect
 
 @app.errorhandler(400)
@@ -18,9 +18,9 @@ def accueil():
 def get_quiz():
     return jsonify(questionnaires = get_questionnaires())
 
-@app.route('/quiz/api/v1.0/quiz/<int:quiz_id>', methods=['GET'])
-def get_quiz_by_id(quiz_id):
-    q = get_questionnaire(quiz_id)
+@app.route('/quiz/api/v1.0/quiz/<int:id_quiz>', methods=['GET'])
+def get_quiz_by_id(id_quiz):
+    q = get_questionnaire(id_quiz)
     if q is None:
         abort(404)
     return jsonify(q.to_json())
@@ -30,40 +30,35 @@ def create_quiz():
     if not request.json or not 'name' in request.json:
         abort(400)
     q = create_questionnaire(request.json['name'])
-    db.session.add(q)
-    db.session.commit()
     return jsonify(q.to_json()), 201
 
-@app.route('/quiz/api/v1.0/quiz/<int:quiz_id>', methods=['PUT'])
-def update_quiz(quiz_id):
-    q = get_questionnaire(quiz_id)
+@app.route('/quiz/api/v1.0/quiz/<int:id_quiz>', methods=['PUT'])
+def update_quiz(id_quiz):
+    q = update_questionnaire(id_quiz)
     if q is None:
         abort(404)
-    if not request.json:
-        abort(400)
-    q.name = request.json.get('name', q.name)
-    db.session.commit()
     return jsonify(q.to_json())
 
-@app.route('/quiz/api/v1.0/quiz/<int:quiz_id>', methods=['DELETE'])
-def delete_quiz(quiz_id):
-    q = get_questionnaire(quiz_id)
+@app.route('/quiz/api/v1.0/quiz/<int:id_quiz>', methods=['DELETE'])
+def delete_quiz(id_quiz):
+    q = get_questionnaire(id_quiz)
     if q is None:
         abort(404)
-    db.session.delete(q)
-    db.session.commit()
+    delete_questionnaire(id_quiz)
     return jsonify({'result': True})
 
-@app.route('/quiz/api/v1.0/quiz/<int:quiz_id>/questions', methods=['GET'])
-def get_questions(quiz_id):
-    q = get_questionnaire(quiz_id)
+# à modifier
+@app.route('/quiz/api/v1.0/quiz/<int:id_quiz>/questions', methods=['GET'])
+def get_questions(id_quiz):
+    q = get_questionnaire(id_quiz)
     if q is None:
         abort(404)
     return jsonify(questions = [q.to_json() for q in q.questions])
 
-@app.route('/quiz/api/v1.0/quiz/<int:quiz_id>/questions/<int:question_id>', methods=['GET'])
-def get_question(quiz_id, question_id):
-    q = get_questionnaire(quiz_id)
+# à modifier
+@app.route('/quiz/api/v1.0/quiz/<int:id_quiz>/questions/<int:question_id>', methods=['GET'])
+def get_question(id_quiz, question_id):
+    q = get_questionnaire(id_quiz)
     if q is None:
         abort(404)
     question = q.questions.filter_by(id=question_id).first()
@@ -71,41 +66,29 @@ def get_question(quiz_id, question_id):
         abort(404)
     return jsonify(question.to_json())
 
-@app.route('/quiz/api/v1.0/quiz/<int:quiz_id>/questions', methods=['POST'])
-def create_question(quiz_id):
-    q = get_questionnaire(quiz_id)
-    if q is None:
-        abort(404)
+@app.route('/quiz/api/v1.0/quiz/<int:id_quiz>/questions', methods=['POST'])
+def create_question_quiz(id_quiz):
     if not request.json or not 'title' in request.json or not 'questionnaireType' in request.json:
         abort(400)
-    question = Question(request.json['title'], request.json['questionnaireType'], quiz_id)
-    db.session.add(question)
-    db.session.commit()
+    question = create_question(request.json['title'], request.json['questionnaireType'], id_quiz)
+    if question is None:
+        abort(404)
     return jsonify(question.to_json()), 201
 
-@app.route('/quiz/api/v1.0/quiz/<int:quiz_id>/questions/<int:question_id>', methods=['PUT'])
-def update_question(quiz_id, question_id):
-    q = get_questionnaire(quiz_id)
-    if q is None:
-        abort(404)
-    question = q.questions.filter_by(id=question_id).first()
-    if question is None:
-        abort(404)
+@app.route('/quiz/api/v1.0/quiz/<int:id_quiz>/questions/<int:question_id>', methods=['PUT'])
+def update_question_quiz(id_quiz, question_id):
     if not request.json:
         abort(400)
-    question.title = request.json.get('title', question.title)
-    question.questionnaireType = request.json.get('questionnaireType', question.questionnaireType)
-    db.session.commit()
-    return jsonify(question.to_json())
-
-@app.route('/quiz/api/v1.0/quiz/<int:quiz_id>/questions/<int:question_id>', methods=['DELETE'])
-def delete_question(quiz_id, question_id):
-    q = get_questionnaire(quiz_id)
-    if q is None:
-        abort(404)
-    question = q.questions.filter_by(id=question_id).first()
+        # id_quiz, question_id, title, questionnaireType
+    question = update_question(id_quiz, question_id, request.json.get('title', question.title), request.json.get('questionnaireType', question.questionnaireType))
     if question is None:
         abort(404)
-    db.session.delete(question)
-    db.session.commit()
+    return jsonify(question.to_json())
+
+@app.route('/quiz/api/v1.0/quiz/<int:id_quiz>/questions/<int:question_id>', methods=['DELETE'])
+def delete_question_quiz(id_quiz, question_id):
+    question = get_question(id_quiz, question_id)
+    if question is None:
+        abort(404)
+    delete_question(id_quiz, question_id)
     return jsonify({'result': True})

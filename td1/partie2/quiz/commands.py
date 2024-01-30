@@ -4,3 +4,7 @@ from .app import app,db
 def syncdb():
     """Initializes the database."""
     db.create_all()
+
+@app.cli.command()
+def inserts():
+    pass
