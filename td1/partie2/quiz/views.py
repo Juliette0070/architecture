@@ -1,5 +1,5 @@
 from .app import app,db
-from .models import Questionnaire, Question, create_questionnaire, delete_questionnaire, get_questionnaire, get_questionnaires, update_questionnaire, create_question, delete_question, get_questions, get_question, update_question
+from .models import Questionnaire, Question, create_questionnaire, delete_questionnaire, get_question_quiz, get_questionnaire, get_questionnaires, update_questionnaire, create_question, delete_question, get_questions, update_question
 from flask import jsonify, abort, make_response, request, redirect
 
 @app.errorhandler(400)
@@ -34,7 +34,9 @@ def create_quiz():
 
 @app.route('/quiz/api/v1.0/quiz/<int:id_quiz>', methods=['PUT'])
 def update_quiz(id_quiz):
-    q = update_questionnaire(id_quiz)
+    if not request.json or not 'name' in request.json:
+        abort(400)
+    q = update_questionnaire(id_quiz, request.json['name'])
     if q is None:
         abort(404)
     return jsonify(q.to_json())
@@ -55,16 +57,15 @@ def get_questions(id_quiz):
         abort(404)
     return jsonify(questions = [q.to_json() for q in q.questions])
 
-# à modifier
 @app.route('/quiz/api/v1.0/quiz/<int:id_quiz>/questions/<int:question_id>', methods=['GET'])
 def get_question(id_quiz, question_id):
     q = get_questionnaire(id_quiz)
     if q is None:
         abort(404)
-    question = q.questions.filter_by(id=question_id).first()
+    question = get_question_quiz(id_quiz, question_id)
     if question is None:
         abort(404)
-    return jsonify(question.to_json())
+    return jsonify(question)
 
 @app.route('/quiz/api/v1.0/quiz/<int:id_quiz>/questions', methods=['POST'])
 def create_question_quiz(id_quiz):
@@ -79,8 +80,8 @@ def create_question_quiz(id_quiz):
 def update_question_quiz(id_quiz, question_id):
     if not request.json:
         abort(400)
-        # id_quiz, question_id, title, questionnaireType
-    question = update_question(id_quiz, question_id, request.json.get('title', question.title), request.json.get('questionnaireType', question.questionnaireType))
+    questionAvant = get_question_quiz(id_quiz, question_id)
+    question = update_question(id_quiz, question_id, request.json.get('title', questionAvant["title"]), request.json.get('questionnaireType', questionAvant["questionnaireType"]))
     if question is None:
         abort(404)
     return jsonify(question.to_json())

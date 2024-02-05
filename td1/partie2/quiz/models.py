@@ -4,7 +4,6 @@ from .app import db
 class Questionnaire(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String(100))
-    questions = get_uri_questions_quiz(id)
 
     def __init__(self, name):
         self.name = name
@@ -69,19 +68,13 @@ def delete_questionnaire(id_quiz):
     db.session.delete(q)
     db.session.commit()
 
-def get_uri_questions_quiz(id_quiz):
-    q = []
-    for question in get_questions(id_quiz):
-        q.append(question['uri'])
-    return q
-
 # question
 
 def get_questions(id_quiz):
     return [q.to_json() for q in Question.query.filter_by(questionnaire_id=id_quiz).all()]
 
-def get_question(id_quiz, question_id):
-    return Question.query.filter_by(questionnaire_id=id_quiz, id=question_id).first()
+def get_question_quiz(id_quiz, question_id):
+    return Question.query.filter_by(questionnaire_id=id_quiz, id=question_id).first().to_json()
 
 def create_question(title, questionnaireType, questionnaire_id):
     q = Question(title, questionnaireType, questionnaire_id)
