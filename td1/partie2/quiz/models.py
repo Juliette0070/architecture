@@ -25,6 +25,11 @@ class Question(db.Model):
     questionnaireType = db.Column(db.String(120))
     questionnaire_id = db.Column(db.Integer, db.ForeignKey('questionnaire.id'))
     questionnaire = db.relationship('Questionnaire', backref=db.backref('questions', lazy='dynamic'))
+    __mapper_args__ = {
+        'polymorphic_identity': 'question',
+        'with_polymorphic': '*',
+        'polymorphic_on': questionnaireType
+    }
 
     def __init__(self, title, questionnaireType, questionnaire_id):
         self.title = title
@@ -40,6 +45,50 @@ class Question(db.Model):
             'title': self.title,
             'questionnaireType': self.questionnaireType,
             'questionnaire_id': self.questionnaire_id,
+            'uri': url_for('get_question', id_quiz=self.questionnaire_id, question_id=self.id, _external=True)
+        }
+
+class SimpleQuestion(Question):
+    id = db.Column(db.Integer, db.ForeignKey('question.id'), primary_key=True)
+    reponse = db.Column(db.String(120))
+    __mapper_args__ = {
+        'polymorphic_identity': 'simplequestion',
+        'with_polymorphic': '*',
+        'polymorphic_load': 'inline'
+    }
+    
+    def __repr__(self):
+        return '<SimpleQuestion (%d) %s>' % (self.id, self.title)
+    
+    def to_json(self):
+        return {
+            'id': self.id,
+            'title': self.title,
+            'questionnaireType': self.questionnaireType,
+            'questionnaire_id': self.questionnaire_id,
+            'reponse': self.reponse,
+            'uri': url_for('get_question', id_quiz=self.questionnaire_id, question_id=self.id, _external=True)
+        }
+
+class MultipleQuestion(Question):
+    id = db.Column(db.Integer, db.ForeignKey('question.id'), primary_key=True)
+    reponse = db.Column(db.Integer)
+    __mapper_args__ = {
+        'polymorphic_identity': 'multiplequestion',
+        'with_polymorphic': '*',
+        'polymorphic_load': 'inline'
+    }
+
+    def __repr__(self):
+        return '<MultipleQuestion (%d) %s>' % (self.id, self.title)
+    
+    def to_json(self):
+        return {
+            'id': self.id,
+            'title': self.title,
+            'questionnaireType': self.questionnaireType,
+            'questionnaire_id': self.questionnaire_id,
+            'reponse': self.reponse,
             'uri': url_for('get_question', id_quiz=self.questionnaire_id, question_id=self.id, _external=True)
         }
 
