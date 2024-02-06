@@ -56,6 +56,10 @@ class SimpleQuestion(Question):
         'with_polymorphic': '*',
         'polymorphic_load': 'inline'
     }
+
+    def __init__(self, title, questionnaireType, questionnaire_id, reponse):
+        super().__init__(title, questionnaireType, questionnaire_id)
+        self.reponse = reponse
     
     def __repr__(self):
         return '<SimpleQuestion (%d) %s>' % (self.id, self.title)
@@ -78,6 +82,10 @@ class MultipleQuestion(Question):
         'with_polymorphic': '*',
         'polymorphic_load': 'inline'
     }
+
+    def __init__(self, title, questionnaireType, questionnaire_id, reponse):
+        super().__init__(title, questionnaireType, questionnaire_id)
+        self.reponse = reponse
 
     def __repr__(self):
         return '<MultipleQuestion (%d) %s>' % (self.id, self.title)
@@ -125,11 +133,11 @@ def get_questions(id_quiz):
 def get_question_quiz(id_quiz, question_id):
     return Question.query.filter_by(questionnaire_id=id_quiz, id=question_id).first().to_json()
 
-def create_question(title, questionnaireType, questionnaire_id):
+def create_question(title, questionnaireType, questionnaire_id, request):
     if questionnaireType == 'simplequestion':
-        q = SimpleQuestion(title, questionnaireType, questionnaire_id)
+        q = SimpleQuestion(title, questionnaireType, questionnaire_id, request.json['reponse'])
     elif questionnaireType == 'multiplequestion':
-        q = MultipleQuestion(title, questionnaireType, questionnaire_id)
+        q = MultipleQuestion(title, questionnaireType, questionnaire_id, request.json['reponse'])
     else:
         q = Question(title, questionnaireType, questionnaire_id)
     db.session.add(q)

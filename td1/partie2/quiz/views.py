@@ -71,7 +71,7 @@ def get_question(id_quiz, question_id):
 def create_question_quiz(id_quiz):
     if not request.json or not 'title' in request.json or not 'questionnaireType' in request.json:
         abort(400)
-    question = create_question(request.json['title'], request.json['questionnaireType'], id_quiz)
+    question = create_question(request.json['title'], request.json['questionnaireType'], id_quiz, request)
     if question is None:
         abort(404)
     return jsonify(question.to_json()), 201
