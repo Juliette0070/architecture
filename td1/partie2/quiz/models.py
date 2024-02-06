@@ -57,9 +57,9 @@ class SimpleQuestion(Question):
         'polymorphic_load': 'inline'
     }
 
-    def __init__(self, title, questionnaireType, questionnaire_id, reponse):
+    def __init__(self, title, questionnaireType, questionnaire_id, request):
         super().__init__(title, questionnaireType, questionnaire_id)
-        self.reponse = reponse
+        self.reponse = request.json['reponse']
     
     def __repr__(self):
         return '<SimpleQuestion (%d) %s>' % (self.id, self.title)
@@ -77,15 +77,19 @@ class SimpleQuestion(Question):
 class MultipleQuestion(Question):
     id = db.Column(db.Integer, db.ForeignKey('question.id'), primary_key=True)
     reponse = db.Column(db.Integer)
+    choix1 = db.Column(db.String(120))
+    choix2 = db.Column(db.String(120))
     __mapper_args__ = {
         'polymorphic_identity': 'multiplequestion',
         'with_polymorphic': '*',
         'polymorphic_load': 'inline'
     }
 
-    def __init__(self, title, questionnaireType, questionnaire_id, reponse):
+    def __init__(self, title, questionnaireType, questionnaire_id, request):
         super().__init__(title, questionnaireType, questionnaire_id)
-        self.reponse = reponse
+        self.reponse = request.json['reponse']
+        self.choix1 = request.json['choix1']
+        self.choix2 = request.json['choix2']
 
     def __repr__(self):
         return '<MultipleQuestion (%d) %s>' % (self.id, self.title)
@@ -96,6 +100,8 @@ class MultipleQuestion(Question):
             'title': self.title,
             'questionnaireType': self.questionnaireType,
             'questionnaire_id': self.questionnaire_id,
+            'choix1': self.choix1,
+            'choix2': self.choix2,
             'reponse': self.reponse,
             'uri': url_for('get_question', id_quiz=self.questionnaire_id, question_id=self.id, _external=True)
         }
@@ -135,9 +141,9 @@ def get_question_quiz(id_quiz, question_id):
 
 def create_question(title, questionnaireType, questionnaire_id, request):
     if questionnaireType == 'simplequestion':
-        q = SimpleQuestion(title, questionnaireType, questionnaire_id, request.json['reponse'])
+        q = SimpleQuestion(title, questionnaireType, questionnaire_id, request)
     elif questionnaireType == 'multiplequestion':
-        q = MultipleQuestion(title, questionnaireType, questionnaire_id, request.json['reponse'])
+        q = MultipleQuestion(title, questionnaireType, questionnaire_id, request)
     else:
         q = Question(title, questionnaireType, questionnaire_id)
     db.session.add(q)
