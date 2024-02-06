@@ -88,7 +88,7 @@ def update_question_quiz(id_quiz, question_id):
 
 @app.route('/quiz/api/v1.0/quiz/<int:id_quiz>/questions/<int:question_id>', methods=['DELETE'])
 def delete_question_quiz(id_quiz, question_id):
-    question = get_question(id_quiz, question_id)
+    question = get_question_quiz(id_quiz, question_id)
     if question is None:
         abort(404)
     delete_question(id_quiz, question_id)

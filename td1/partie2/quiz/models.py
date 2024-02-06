@@ -126,7 +126,12 @@ def get_question_quiz(id_quiz, question_id):
     return Question.query.filter_by(questionnaire_id=id_quiz, id=question_id).first().to_json()
 
 def create_question(title, questionnaireType, questionnaire_id):
-    q = Question(title, questionnaireType, questionnaire_id)
+    if questionnaireType == 'simplequestion':
+        q = SimpleQuestion(title, questionnaireType, questionnaire_id)
+    elif questionnaireType == 'multiplequestion':
+        q = MultipleQuestion(title, questionnaireType, questionnaire_id)
+    else:
+        q = Question(title, questionnaireType, questionnaire_id)
     db.session.add(q)
     db.session.commit()
     return q
