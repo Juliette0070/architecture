@@ -1,0 +1,38 @@
+body{
+    background-color: #f2f2f2;
+    padding: 20px;
+    margin: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px #000;
+}
+
+body > h1{
+    text-align: center;
+}
+
+#corps{
+    /* background-color: #f2f2f2;
+    padding: 20px;
+    margin: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px #000; */
+    display: flex;
+}
+
+#liste-quiz{
+    flex: 1 1 20%;
+    margin: 20px;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px #000;
+    background-color: #fff;
+}
+
+#quiz{
+    flex: 1 1 80%;
+    margin: 20px;
+    padding: 20px;
+    border-radius: 10px;
+    box-shadow: 0 0 10px #000;
+    background-color: #fff;
+}
