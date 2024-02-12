@@ -4,7 +4,7 @@ import os
 from flask_sqlalchemy import SQLAlchemy
 
 app = Flask(__name__)
-cors = CORS(app, resources={r"/todo/api/v1.0/*": {"origins": "*"}})
+cors = CORS(app, resources={r"/quiz/api/v1.0/*": {"origins": "*"}})
 
 def mkpath(p):
     return os.path.normpath(

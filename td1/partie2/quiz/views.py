@@ -49,7 +49,6 @@ def delete_quiz(id_quiz):
     delete_questionnaire(id_quiz)
     return jsonify({'result': True})
 
-# à modifier
 @app.route('/quiz/api/v1.0/quiz/<int:id_quiz>/questions', methods=['GET'])
 def get_questions(id_quiz):
     q = get_questionnaire(id_quiz)
