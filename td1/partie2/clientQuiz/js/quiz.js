@@ -5,6 +5,7 @@ $(function() {
     function remplirQuiz(repjson) {
       console.log(JSON.stringify(repjson));
       $('#liste-quiz').empty();
+      $('#liste-quiz').append($('<h2>').text("Liste des quiz"));
       $('#liste-quiz').append($('<ul>'));
       for(questionnaire of repjson.questionnaires){
           console.log(questionnaire);
@@ -12,7 +13,7 @@ $(function() {
                 .append($('<li>')
                 .append($('<a>')
                 .text(questionnaire.name)
-                    ).on("click", questionnaire, details)
+                    ).on("click", questionnaire, detailsQuiz)
                 );
         }
       }
@@ -35,11 +36,20 @@ $(function() {
       }
 
 
-    function details(event){
+    function detailsQuiz(event){
         $("#currentquiz").empty();
-        formTask();
-        fillFormTask(event.data);
-        }
+        formQuiz();
+        fillFormQuiz(event.data);
+    }
+    
+    function detailsQuestion(uri){
+        console.log(uri);
+        console.log("skoggjsoipigjdopfgngoidf");
+        $("#currentquiz #question").empty();
+        $("#currentquiz #question")
+            .append($('<span>Question<input type="text" id="q"><br></span>'))
+            .append($('<input type="button" value="modify question">'));
+    }
 
 
     class Task{
@@ -59,22 +69,34 @@ $(function() {
     }
 
 
-    $("#tools #add").on("click", formTask);
-    $('#tools #del').on('click', delTask);
+    $("#tools #add").on("click", formQuiz);
+    $('#tools #del').on('click', delQuiz);
 
-    function formTask(isnew){
+    function formQuiz(isnew){
         $("#currentquiz").empty();
         $("#currentquiz")
-            .append($('<span>Titre<input type="text" id="titre"><br></span>'))
-            .append($('<span>Description<input type="text" id="descr"><br></span>'))
-            .append($('<span>Done<input type="checkbox" id="done"><br></span>'))
-            .append($('<span><input type="hidden" id="turi"><br></span>'))
-            .append(isnew?$('<span><input type="button" value="Save Task"><br></span>').on("click", saveNewTask)
-                         :$('<span><input type="button" value="Modify Task"><br></span>').on("click", saveModifiedTask)
-                );
+            .append($('<div id="liste-questions">'))
+            .append($('<div id="question">'))
+        $("#currentquiz #liste-questions")
+            .append($('<span>Questionnaire: <input type="text" id="questionnaire"><br></span>'))
+            .append("<ul id='questions'></ul>")
+            .append($('<input type="hidden" id="turi">'))
+            .append($('<input type="button" value="modify quiz">'));
+        $("#currentquiz #question")
+            .append($('<span>Question<input type="text" id="question"><br></span>'))
+            .append($('<input type="button" value="modify question">'));
         }
 
-    function fillFormTask(t){
+    function fillFormQuiz(t){
+        $("#currentquiz #questionnaire").val(t.name);
+        for (var i = 0; i < t.questions.length; i++){
+            $("#currentquiz #questions")
+            .append($('<li>')
+            .append($('<a>')
+            .text(t.questions[i]))
+            .on("click", detailsQuestion));
+        }
+
         $("#currentquiz #titre").val(t.title);
         $("#currentquiz #descr").val(t.description);
          t.uri=(t.uri == undefined)?"http://localhost:5000/todo/api/v1.0/tasks"+t.id:t.uri;
@@ -83,7 +105,7 @@ $(function() {
         $("#currentquiz #done").prop('checked', false);
     }
 
-    function saveNewTask(){
+    function saveNewQuiz(){
         var task = new Task(
             $("#currentquiz #titre").val(),
             $("#currentquiz #descr").val(),
@@ -105,7 +127,7 @@ $(function() {
         .catch( res => { console.log(res) });
     }
 
-    function saveModifiedTask(){
+    function saveModifiedQuiz(){
         var task = new Task(
             $("#currentquiz #titre").val(),
             $("#currentquiz #descr").val(),
@@ -127,7 +149,7 @@ $(function() {
         .catch( res => { console.log(res) });
     }
 
-    function delTask(){
+    function delQuiz(){
         if ($("#currentquiz #turi").val()){
         url = $("#currentquiz #turi").val();
         fetch(url,{
