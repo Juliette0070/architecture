@@ -14,3 +14,6 @@ def mkpath(p):
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///' + mkpath('../quiz.db')
 app.config['SQLALCHEMY_ECHO'] = True
 db = SQLAlchemy(app)
+
+if __name__ == "__main__":
+    app.run()
