@@ -3,12 +3,10 @@ $(function() {
     $("#button").click(refreshQuizList);
 
     function remplirQuiz(repjson) {
-      console.log(JSON.stringify(repjson));
       $('#liste-quiz').empty();
       $('#liste-quiz').append($('<h2>').text("Liste des quiz"));
       $('#liste-quiz').append($('<ul>'));
       for(questionnaire of repjson.questionnaires){
-          console.log(questionnaire);
           $('#liste-quiz ul')
                 .append($('<li>')
                 .append($('<a>')
@@ -43,11 +41,21 @@ $(function() {
     }
     
     function detailsQuestion(uri){
-        console.log(uri);
-        console.log("skoggjsoipigjdopfgngoidf");
+        requete = uri;
+        fetch(requete)
+        .then( response => {
+                  if (response.ok) return response.json();
+                  else throw new Error('Problème ajax: '+response.status);
+                }
+            )
+        .then(remplirQuestion)
+        .catch(onerror);
+    }
+
+    function remplirQuestion(repjson) {
         $("#currentquiz #question").empty();
         $("#currentquiz #question")
-            .append($('<span>Question<input type="text" id="q"><br></span>'))
+            .append($('<input type="text" id="questionSelectionnee" value="' + repjson.title + '"><br>'))
             .append($('<input type="button" value="modify question">'));
     }
 
@@ -94,7 +102,8 @@ $(function() {
             .append($('<li>')
             .append($('<a>')
             .text(t.questions[i]))
-            .on("click", detailsQuestion));
+            .on("click", (function(question) {return function() {detailsQuestion(question);};})(t.questions[i]))
+            );
         }
 
         $("#currentquiz #titre").val(t.title);
