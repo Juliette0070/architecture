@@ -1,7 +1,4 @@
-
-    Commandes pour lancer le serveur et le client
-    Commandes curl pour interagir avec le serveur
-    Fonctionnalités implantées
+# Client-serveur RESTful avec Flask - Quiz
 
 ## Commandes pour lancer le serveur et le client
 
@@ -15,7 +12,45 @@ mettre le chemin du fichier quiz.html dans le navigateur
 
 ## Commandes curl pour interagir avec le serveur
 
-http://localhost:5000/quiz/api/v1.0/quiz
+### Afficher la liste des quiz
+
+GET http://localhost:5000/quiz/api/v1.0/quiz
+
+### Afficher un quiz
+
+GET http://localhost:5000/quiz/api/v1.0/quiz/id_quiz
+
+### Ajouter un quiz
+
+POST http://localhost:5000/quiz/api/v1.0/quiz
+
+### Supprimer un quiz
+
+DELETE http://localhost:5000/quiz/api/v1.0/quiz/id_quiz
+
+### Modifier un quiz
+
+PUT http://localhost:5000/quiz/api/v1.0/quiz/id_quiz
+
+### Afficher la liste des questions d'un quiz
+
+GET http://localhost:5000/quiz/api/v1.0/quiz/id_quiz/questions
+
+### Afficher une question d'un quiz
+
+GET http://localhost:5000/quiz/api/v1.0/quiz/id_quiz/questions/id_question
+
+### Ajouter une question à un quiz
+
+POST http://localhost:5000/quiz/api/v1.0/quiz/id_quiz/questions
+
+### Supprimer une question d'un quiz
+
+DELETE http://localhost:5000/quiz/api/v1.0/quiz/id_quiz/questions/id_question
+
+### Modifier une question d'un quiz
+
+PUT http://localhost:5000/quiz/api/v1.0/quiz/id_quiz/questions/id_question
 
 ## Fonctionnalités implantées
 
