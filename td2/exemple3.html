@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    <meta charset ="utf-8">
+    <script type=" importmap ">
+        {
+            "imports": {
+                "vue": "https://unpkg.com/vue@3/dist/vue.esm-browser.js"
+            }
+        }
+    </script>
+</head>
+<body>
+    <div id="app3">
+        <h2>{{ title }}</h2>
+        <ul>
+            <li>{{ items[0] }}</li>
+            <li>{{ items[1] }}</li>
+        </ul>
+        <hr/>
+        <em>Changez le titre de votre liste ici !</em>
+        <input v-model="title" type="text"/>
+    </div>
+    <script type="module">
+        import { createApp } from 'vue'
+        createApp ({
+            data () {
+                return {
+                    items: ["Courses", "Apprendre REST"],
+                    title: "Ma liste de taches"
+                }
+            }
+        }).mount('#app3')
+    </script>
+</body>
+</html>

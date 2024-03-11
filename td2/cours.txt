@@ -1,0 +1,4 @@
+v-bind:att="val" ou :att="val" => liaison unidirectionnelle
+v-model="val" => liaison bidirectionnelle
+
+{{ val }} ne fonctionne pas avec les attributs
