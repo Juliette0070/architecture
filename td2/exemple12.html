@@ -15,21 +15,11 @@
     crossorigin ="anonymous">
 </head>
 <body>
-    <div id="app7">
-        <h2>{{ creation }}</h2>
-        <input type="text" v-model="newTodo" @keyup.enter="addTodo">
-        <input type="submit" value="ajouter la tache" v-on:click="addTodo">
-        <h2>{{ title }}</h2>
-        <ol>
-            <li v-for="todo in todos" v-bind:class="{'alert alert-success': todo.checked }">
-                <div class="checkbox">
-                    <label>
-                        <input type="checkbox" v-model="todo.checked">
-                        {{ todo.text }}
-                    </label>
-                </div>
-            </li>
-        </ol>
+    <div id="app12">
+        <titre :texte="creation"></titre>
+        <champs-bouton :fonction="addTodo" :texte="texte" :champs="newTodo"></champs-bouton>
+        <titre :texte="title"></titre>
+        <todos :todos="todos"></todos>
     </div>
     <script type="module">
         import { createApp } from 'vue'
@@ -43,7 +33,8 @@
                     ],
                     title: "Mes taches urgentes:",
                     creation: "Création d'une nouvelle tache:",
-                    newTodo: ''
+                    newTodo: '',
+                    texte: "ajouter la tache"
                 }
             },
             methods: {
@@ -53,8 +44,22 @@
                         this.newTodo = ''
                     }
                 }
+            },
+            components: {
+                'titre': {
+                    props: ['texte'],
+                    template: '<h2>{{ texte }}</h2>'
+                },
+                'champs-bouton': {
+                    props: ['fonction', 'texte', 'champs'],
+                    template: '<input type="text" v-model="newTodo" @keyup.enter="fonction"><input type="submit" :value="texte" @click="fonction(champs)">'
+                },
+                'todos': {
+                    props: ['todos'],
+                    template: '<ol><li v-for="todo in todos" v-bind:class="{\'alert alert-success\': todo.checked }"><div class="checkbox"><label><input type="checkbox" v-model="todo.checked">{{ todo.text }}</label></div></li></ol>'
+                }
             }
-        }).mount('#app7')
+        }).mount('#app12')
     </script>
 </body>
 </html>
