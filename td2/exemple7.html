@@ -17,7 +17,7 @@
 <body>
     <div id="app7">
         <h2>{{ creation }}</h2>
-        <input type="text" v-model="newTodo">
+        <input type="text" v-model="newTodo" @keyup.enter="addTodo">
         <input type="submit" value="ajouter la tache" v-on:click="addTodo">
         <h2>{{ title }}</h2>
         <ol>
@@ -48,8 +48,10 @@
             },
             methods: {
                 addTodo () {
-                    this.todos.push({ text: this.newTodo, checked: false })
-                    this.newTodo = ''
+                    if (this.newTodo) {
+                        this.todos.push({ text: this.newTodo, checked: false })
+                        this.newTodo = ''
+                    }
                 }
             }
         }).mount('#app7')
