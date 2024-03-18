@@ -33,15 +33,15 @@
                     ],
                     title: "Mes taches urgentes:",
                     creation: "Création d'une nouvelle tache:",
-                    newTodo: '',
+                    newTodo: { text: '' },
                     texte: "ajouter la tache"
                 }
             },
             methods: {
                 addTodo () {
                     if (this.newTodo) {
-                        this.todos.push({ text: this.newTodo, checked: false })
-                        this.newTodo = ''
+                        this.todos.push({ text: this.newTodo.text, checked: false })
+                        this.newTodo = { text: '' }
                     }
                 }
             },
@@ -52,7 +52,7 @@
                 },
                 'champs-bouton': {
                     props: ['fonction', 'texte', 'champs'],
-                    template: '<input type="text" v-model="newTodo" @keyup.enter="fonction"><input type="submit" :value="texte" @click="fonction(champs)">'
+                    template: '<input type="text" v-model="champs.text" @keyup.enter="fonction"><input type="submit" :value="texte" @click="fonction">'
                 },
                 'todos': {
                     props: ['todos'],
