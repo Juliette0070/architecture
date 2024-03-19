@@ -3,7 +3,7 @@
 import TodoItem from  './components/TodoItem.vue';
 
 let data = {
-  todos: [{ text: 'Faire les courses', checked: true }, { text: 'Apprendre REST', checked: false}],
+  todos: [{ id: 0, text: 'Faire les courses', checked: true }, { id: 1, text: 'Apprendre REST', checked: false}],
   title: "Mes taches",
   newItem: ''
 };
@@ -16,9 +16,15 @@ export default {
     addItem: function() {
       let text = this.newItem.trim();
       if (text) {
-        this.todos.push({ text: text, checked: false });
+        this.todos.push({ id:this.todos[this.todos.length-1]+1, text: text, checked: false });
         this.newItem = '';
       }
+    },
+    removeItem($event) {
+      this.todos.splice(this.todos.indexOf(this.get_todo_by_id($event.id)), 1);
+    },
+    get_todo_by_id(id) {
+      return this.todos.find(todo => todo.id === id);
     }
   },
   components: { TodoItem }
