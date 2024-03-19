@@ -1,4 +1,7 @@
 <script>
+
+import TodoItem from  './components/TodoItem.vue';
+
 let data = {
   todos: [{ text: 'Faire les courses', checked: true }, { text: 'Apprendre REST', checked: false}],
   title: "Mes taches",
@@ -17,7 +20,8 @@ export default {
         this.newItem = '';
       }
     }
-  }
+  },
+  components: { TodoItem }
 };
 </script>
 
@@ -32,13 +36,7 @@ export default {
     </div>
     <h2>{{ title }}</h2>
     <ol>
-      <li v-for="todo in todos" v-bind:class="{ 'alert alert-success': todo.checked }">
-        <div class="checkbox">
-          <label>
-            <input type="checkbox" v-model="todo.checked"> {{ todo.text }}
-          </label>
-        </div>
-      </li>
+      <TodoItem v-for="item of todos" :todo="item" :key="item.id" @remove="removeItem"></TodoItem>
     </ol>
   </div>
 </template>
