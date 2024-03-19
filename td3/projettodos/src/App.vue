@@ -1,30 +1,44 @@
-<script setup>
-import HelloWorld from './components/HelloWorld.vue'
+<script>
+let data = {
+  todos: [{ text: 'Faire les courses', checked: true }, { text: 'Apprendre REST', checked: false}],
+  title: "Mes taches",
+  newItem: ''
+};
+
+export default {
+  data() {
+    return data;
+  },
+  methods: {
+    addItem: function() {
+      let text = this.newItem.trim();
+      if (text) {
+        this.todos.push({ text: text, checked: false });
+        this.newItem = '';
+      }
+    }
+  }
+};
 </script>
 
 <template>
-  <div>
-    <a href="https://vitejs.dev" target="_blank">
-      <img src="/vite.svg" class="logo" alt="Vite logo" />
-    </a>
-    <a href="https://vuejs.org/" target="_blank">
-      <img src="./assets/vue.svg" class="logo vue" alt="Vue logo" />
-    </a>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.3/dist/css/bootstrap.min.css" integrity ="sha384-rbsA2VBKQhggwzxH7pPCaAqO46MgnOM80zW1RWuH61DGLwZJEdK2Kadq2F9CUG65" crossorigin ="anonymous">
+  <div class="container">
+    <div class="input-group">
+      <input type="text" class="form-control" v-model="newItem" @keyup.enter="addItem" placeholder="Ajouter une tache à la liste">
+      <span class="input-group-btn">
+        <button class="btn btn-default" @click="addItem" type="button">Ajouter</button>
+      </span>
+    </div>
+    <h2>{{ title }}</h2>
+    <ol>
+      <li v-for="todo in todos" v-bind:class="{ 'alert alert-success': todo.checked }">
+        <div class="checkbox">
+          <label>
+            <input type="checkbox" v-model="todo.checked"> {{ todo.text }}
+          </label>
+        </div>
+      </li>
+    </ol>
   </div>
-  <HelloWorld msg="Vite + Vue" />
 </template>
-
-<style scoped>
-.logo {
-  height: 6em;
-  padding: 1.5em;
-  will-change: filter;
-  transition: filter 300ms;
-}
-.logo:hover {
-  filter: drop-shadow(0 0 2em #646cffaa);
-}
-.logo.vue:hover {
-  filter: drop-shadow(0 0 2em #42b883aa);
-}
-</style>
