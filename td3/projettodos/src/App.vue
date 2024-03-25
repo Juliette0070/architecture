@@ -1,5 +1,7 @@
 <script>
 
+// http://127.0.0.1:5000/todo/api/v1.0/tasks
+
 import TodoItem from  './components/TodoItem.vue';
 
 let data = {
@@ -16,7 +18,7 @@ export default {
     addItem: function() {
       let text = this.newItem.trim();
       if (text) {
-        this.todos.push({ id:this.todos[this.todos.length-1]+1, text: text, checked: false });
+        this.todos.push({ id:this.todos[this.todos.length-1].id+1, text: text, checked: false });
         this.newItem = '';
       }
     },
