@@ -77,3 +77,26 @@ button:focus-visible {
     background-color: #f9f9f9;
   }
 } */
+
+.checkbox {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.checkbox label {
+  flex-grow: 1;
+}
+
+.checkbox .btn {
+  margin-left: 10px;
+}
+
+li {
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  padding: 10px;
+  margin: 10px 0;
+  justify-content: space-between;
+  align-items: center;
+}

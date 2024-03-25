@@ -5,7 +5,7 @@
 import TodoItem from  './components/TodoItem.vue';
 
 let data = {
-  todos: [{ id: 0, text: 'Faire les courses', checked: true }, { id: 1, text: 'Apprendre REST', checked: false}],
+  todos: [{ id: 0, title: 'Faire les courses', done: true }, { id: 1, title: 'Apprendre REST', done: false}],
   title: "Mes taches",
   newItem: ''
 };
@@ -18,7 +18,7 @@ export default {
     addItem: function() {
       let text = this.newItem.trim();
       if (text) {
-        this.todos.push({ id:this.todos[this.todos.length-1].id+1, text: text, checked: false });
+        this.todos.push({ id:this.todos[this.todos.length-1].id+1, title: text, done: false });
         this.newItem = '';
       }
     },
@@ -29,7 +29,14 @@ export default {
       return this.todos.find(todo => todo.id === id);
     }
   },
-  components: { TodoItem }
+  components: { TodoItem },
+  mounted() {
+    fetch('http://127.0.0.1:5000/todo/api/v1.0/tasks')
+        .then(response => response.json())
+        .then(data => {
+          this.todos = data.tasks;
+        });
+  }
 };
 </script>
 
